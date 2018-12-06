@@ -99,14 +99,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		   	startups = startups.filter(startup => startup.attributes.status != 'death');
 		   	var startupIdList = fixedLengthShuffledArray(JsonToArray(startups).length);
 			// Display the first startup and launch the clock
-			currentStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId]]];
-			nextStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId + 1]]];
-			setCurrentStartup(currentStartup.attributes.name, currentStartup.attributes.pitch);
-			setNextStartup(nextStartup.attributes.name, currentStartupId + 1, startupIdList.length);
+			changeStartup(startups, startupIdList, currentStartupId);
 			launchClock();
 
 		   	// Go to next startup
 		   	function goToNextStartup() {
+		   		// If second startup show back button
+				if (currentStartupId == 0) {
+					back.classList.remove('hidden');
+				}
 		   		// Don't allow going to last startup + 2
 		   		if (currentStartupId == startupIdList.length) {
 		   			return;
@@ -117,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		   			name.innerHTML = 'Sujets transverses';
 					pitch.innerHTML = 'Sujets ou annonces qui concernent l\'ensemble de la fabrique numérique'
 					setNextStartup('', -1, -1);
-
+					next.classList.add('hidden');
 		   		}
 		   		// If second to last startup, then don't display next startup
 		   		else if (currentStartupId == startupIdList.length - 2) {
@@ -139,6 +140,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			// Go to previous startup
 		   	function goToPreviousStartup() {
 		   		// Don't allow going to first startup - 1
+		   		if (currentStartupId == 1) {
+					back.classList.add('hidden');	
+		   		}
+		   		// Don't allow going to first startup - 1
 		   		if (currentStartupId == 0) {
 		   			return;
 		   		}
@@ -148,6 +153,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 					currentStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId]]];
 					setCurrentStartup(currentStartup.attributes.name, currentStartup.attributes.pitch);
 					setNextStartup('Sujets transverses', currentStartupId + 1, startupIdList.length);
+					next.classList.remove('hidden');	
 		   		}
 				// Else change startup
 				else {

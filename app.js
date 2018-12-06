@@ -43,9 +43,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		name.innerHTML = newName;
 		pitch.innerHTML = newPitch;
 	}
-	function setNextStartup(newName, startupId, startupLength) {
+	function setNextStartup(newName, startupLength) {
 		if (startupLength == -1) {
-			next.disabled = true;
+			next.innerHTML = "suivant";
 		} else {
 			next.innerHTML = "suivant (" + newName + ")";
 		}
@@ -118,14 +118,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
 					++currentStartupId;
 		   			name.innerHTML = 'Sujets transverses';
 					pitch.innerHTML = 'Sujets ou annonces qui concernent l\'ensemble de la Fabrique Numérique'
-					setNextStartup('', -1, -1);
+					setNextStartup('', -1);
 		   		}
 		   		// If second to last startup, then don't display next startup
 		   		else if (currentStartupId == startupIdList.length - 2) {
 					++currentStartupId;
 					currentStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId]]];
 					setCurrentStartup(currentStartup.attributes.name, currentStartup.attributes.pitch);
-					setNextStartup('Sujets transverses', currentStartupId + 1, startupIdList.length);
+					setNextStartup('Sujets transverses', startupIdList.length);
 		   		}
 		   		// Else change startup and increment counter
 		   		else {
@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		   			--currentStartupId;
 					currentStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId]]];
 					setCurrentStartup(currentStartup.attributes.name, currentStartup.attributes.pitch);
-					setNextStartup('sujets transverses', currentStartupId + 1, startupIdList.length);
+					setNextStartup('sujets transverses', startupIdList.length);
 		   		}
 				// Else change startup
 				else {

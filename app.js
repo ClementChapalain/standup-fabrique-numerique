@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		   			--currentStartupId;
 					currentStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId]]];
 					setCurrentStartup(currentStartup.attributes.name, currentStartup.attributes.pitch);
-					setNextStartup('Sujets transverses', currentStartupId + 1, startupIdList.length);
+					setNextStartup('sujets transverses', currentStartupId + 1, startupIdList.length);
 		   		}
 				// Else change startup
 				else {

@@ -6,8 +6,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	const timer = document.getElementById('timer'); // Get the timer
 	const next = document.getElementById('next'); // Get the next button
 	const back = document.getElementById('back'); // Get the back button
-	var totalSeconds = 0;
-	var timeVar
+	const nextIndicator = document.getElementById('nextIndicator'); // Get the next startup indicator
+
 
 	/****************
 	GENERAL FUNCTIONS
@@ -36,13 +36,28 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		return Object.keys(json);
 	}
 
-	// Change name and pitch
-	function changeNamePitch(newName, newPitch) {
+	// Change HTML
+	function setCurrentStartup(newName, newPitch) {
 		name.innerHTML = newName;
 		pitch.innerHTML = newPitch;
 	}
+	function setNextStartup(newName, startupId, startupLength) {
+		if (startupLength == -1) {
+			nextIndicator.innerHTML = "-";
+		} else {
+			nextIndicator.innerHTML = startupId + "/" + startupLength + " - prochain : " + newName;
+		}
+	}
+	function changeStartup(startups, startupIdList, currentStartupId) {
+		currentStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId]]];
+		nextStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId + 1]]];
+		setCurrentStartup(currentStartup.attributes.name, currentStartup.attributes.pitch);
+		setNextStartup(nextStartup.attributes.name, currentStartupId + 1, startupIdList.length);
+	}
 
    	// Timer functions
+	var totalSeconds = 0;
+	var timeVar;
 	function prefixZero(num) {
 		if (num < 10) {
 			return "0" + num;
@@ -74,16 +89,20 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		var startups = {}; // json of all mtes startups
 		var currentStartupId = 0; // current startup id displayed
 		var currentStartup = {}; // current startup object displayed
+		var nextStartup = {}; // next startup object displayed
 
 		fetch(url)
 		.then((resp) => resp.json())
 		.then(function(data) {
-			// Get the MTES startups
+			// Get the MTES startups not in death status
 		   	startups = data.data.filter(startup => startup.relationships.incubator.data.id == 'mtes');
+		   	startups = startups.filter(startup => startup.attributes.status != 'death');
 		   	var startupIdList = fixedLengthShuffledArray(JsonToArray(startups).length);
 			// Display the first startup and launch the clock
 			currentStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId]]];
-			changeNamePitch(currentStartup.attributes.name, currentStartup.attributes.pitch);
+			nextStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId + 1]]];
+			setCurrentStartup(currentStartup.attributes.name, currentStartup.attributes.pitch);
+			setNextStartup(nextStartup.attributes.name, currentStartupId + 1, startupIdList.length);
 			launchClock();
 
 		   	// Go to next startup
@@ -97,13 +116,20 @@ document.addEventListener("DOMContentLoaded", function(event) {
 					++currentStartupId;
 		   			name.innerHTML = 'Sujets transverses';
 					pitch.innerHTML = 'Sujets ou annonces qui concernent l\'ensemble de la fabrique numérique'
+					setNextStartup('', -1, -1);
+
+		   		}
+		   		// If second to last startup, then don't display next startup
+		   		else if (currentStartupId == startupIdList.length - 2) {
+					++currentStartupId;
+					currentStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId]]];
+					setCurrentStartup(currentStartup.attributes.name, currentStartup.attributes.pitch);
+					setNextStartup('Sujets transverses', currentStartupId + 1, startupIdList.length);
 		   		}
 		   		// Else change startup and increment counter
 		   		else {
 					++currentStartupId;
-					currentStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId]]];
-					var currentStartupIdDisplayed = currentStartupId + 1
-					changeNamePitch(currentStartup.attributes.name, currentStartup.attributes.pitch);
+					changeStartup(startups, startupIdList, currentStartupId);
 				}
 				// Launch the clock
 				launchClock();
@@ -116,18 +142,25 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		   		if (currentStartupId == 0) {
 		   			return;
 		   		}
-				// Change startup
-				--currentStartupId;
-				currentStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId]]];
-				// Display new startup
-				changeNamePitch(currentStartup.attributes.name, currentStartup.attributes.pitch);
+		   		// If last startup display sujets transverses as next
+		   		if (currentStartupId == startupIdList.length) {
+		   			--currentStartupId;
+					currentStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId]]];
+					setCurrentStartup(currentStartup.attributes.name, currentStartup.attributes.pitch);
+					setNextStartup('Sujets transverses', currentStartupId + 1, startupIdList.length);
+		   		}
+				// Else change startup
+				else {
+					--currentStartupId;
+					changeStartup(startups, startupIdList, currentStartupId);
+				}
 				// Launch the clock
 				launchClock();
 			};
 			back.addEventListener('click', goToPreviousStartup);
 
 		})
-		
+
 		// Catch errors in the console
 		.catch(function(error) {
 		   	console.log(error);

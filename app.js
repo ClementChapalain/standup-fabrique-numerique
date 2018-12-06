@@ -1,33 +1,45 @@
 document.addEventListener("DOMContentLoaded", function(event) {
 	
 	const url = 'https://beta.gouv.fr/api/v1.6/startups.json'; // Get startups from beta gouv api
-	const name = document.getElementById('name'); // Get the element where we will place our startups
-	const pitch = document.getElementById('pitch'); // Get the element where we will place our startups
+	const name = document.getElementById('name'); // Get the startup name element
+	const pitch = document.getElementById('pitch'); // Get the startup pitch element
 	const timer = document.getElementById('timer'); // Get the timer
 	const next = document.getElementById('next'); // Get the next button
-	const back = document.getElementById('back'); // Get the next button
-	var startups = {};
-	var currentStartupId = 0;
-	var currentStartup = {};
+	const back = document.getElementById('back'); // Get the back button
 	var totalSeconds = 0;
 	var timeVar
 
+	/****************
+	GENERAL FUNCTIONS
+	****************/
+
 	// Shuffle function
-	function shuffle(sourceArray) {
-	    for (var i = 0; i < sourceArray.length - 1; i++) {
-	        var j = i + Math.floor(Math.random() * (sourceArray.length - i));
-	        var temp = sourceArray[j];
-	        sourceArray[j] = sourceArray[i];
-	        sourceArray[i] = temp;
-	    }
-	    return sourceArray;
-	}
 	function fixedLengthShuffledArray(arrayLength) {
+		function shuffle(sourceArray) {
+		    for (var i = 0; i < sourceArray.length - 1; i++) {
+		        var j = i + Math.floor(Math.random() * (sourceArray.length - i));
+		        var temp = sourceArray[j];
+		        sourceArray[j] = sourceArray[i];
+		        sourceArray[i] = temp;
+		    }
+		    return sourceArray;
+		}
 	   	var randomArray = [];
 	    for (var i = 0; i < arrayLength - 1; i++) {
 		    randomArray.push(i);
 	    }
 		return shuffle(randomArray);
+	}
+
+	// JSON to array function
+	function JsonToArray(json) {
+		return Object.keys(json);
+	}
+
+	// Change name and pitch
+	function changeNamePitch(newName, newPitch) {
+		name.innerHTML = newName;
+		pitch.innerHTML = newPitch;
 	}
 
    	// Timer functions
@@ -46,23 +58,33 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		second = prefixZero(second);	
 		timer.innerHTML = minute + ":" + second;
 	}
+	function launchClock() {
+		totalSeconds = 0;
+		timer.innerHTML = '00:00';
+		clearInterval(timeVar);
+		timeVar = setInterval(runTimer, 1000);
+	}
 
-	// The standup app
+	/**************
+	THE STANDUP APP
+	**************/
+
 	function getMtesStartups() {
 
+		var startups = {}; // json of all mtes startups
+		var currentStartupId = 0; // current startup id displayed
+		var currentStartup = {}; // current startup object displayed
+
 		fetch(url)
-		.then((resp) => resp.json()) // Transform the data into json
+		.then((resp) => resp.json())
 		.then(function(data) {
 			// Get the MTES startups
 		   	startups = data.data.filter(startup => startup.relationships.incubator.data.id == 'mtes');
-		   	var startupIdList = fixedLengthShuffledArray(Object.keys(startups).length);
+		   	var startupIdList = fixedLengthShuffledArray(JsonToArray(startups).length);
 			// Display the first startup and launch the clock
-			currentStartup = startups[Object.keys(startups)[startupIdList[currentStartupId]]];
-		   	name.innerHTML = currentStartup.attributes.name;
-		   	pitch.innerHTML = currentStartup.attributes.pitch;
-			timer.innerHTML = '00:00';
-			timeVar = setInterval(runTimer, 1000);
-		   	//console.log(startups);
+			currentStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId]]];
+			changeNamePitch(currentStartup.attributes.name, currentStartup.attributes.pitch);
+			launchClock();
 
 		   	// Go to next startup
 		   	function goToNextStartup() {
@@ -70,26 +92,21 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		   		if (currentStartupId == startupIdList.length) {
 		   			return;
 		   		}
-		   		// Increment startup counter
 		   		// If last startup, then go to sujets transverses
 		   		if (currentStartupId == startupIdList.length - 1) {
 					++currentStartupId;
 		   			name.innerHTML = 'Sujets transverses';
 					pitch.innerHTML = 'Sujets ou annonces qui concernent l\'ensemble de la fabrique numérique'
-		   		} else {
-					// Change startup
+		   		}
+		   		// Else change startup and increment counter
+		   		else {
 					++currentStartupId;
-					currentStartup = startups[Object.keys(startups)[startupIdList[currentStartupId]]];
-					// Display new startup
+					currentStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId]]];
 					var currentStartupIdDisplayed = currentStartupId + 1
-					name.innerHTML = currentStartup.attributes.name;
-					pitch.innerHTML = currentStartup.attributes.pitch;
+					changeNamePitch(currentStartup.attributes.name, currentStartup.attributes.pitch);
 				}
 				// Launch the clock
-				totalSeconds = 0;
-				timer.innerHTML = '00:00';
-				clearInterval(timeVar);
-				timeVar = setInterval(runTimer, 1000);
+				launchClock();
 			};
 			next.addEventListener('click', goToNextStartup);
 
@@ -101,21 +118,18 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		   		}
 				// Change startup
 				--currentStartupId;
-				currentStartup = startups[Object.keys(startups)[startupIdList[currentStartupId]]];
+				currentStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId]]];
 				// Display new startup
-				name.innerHTML = currentStartup.attributes.name;
-				pitch.innerHTML = currentStartup.attributes.pitch;
+				changeNamePitch(currentStartup.attributes.name, currentStartup.attributes.pitch);
 				// Launch the clock
-				totalSeconds = 0;
-				timer.innerHTML = '00:00';
-				clearInterval(timeVar);
-				timeVar = setInterval(runTimer, 1000);
+				launchClock();
 			};
 			back.addEventListener('click', goToPreviousStartup);
 
 		})
+		
+		// Catch errors in the console
 		.catch(function(error) {
-		   	// If there is any error you will catch them here
 		   	console.log(error);
 		})
 

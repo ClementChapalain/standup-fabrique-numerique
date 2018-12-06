@@ -1,13 +1,15 @@
 document.addEventListener("DOMContentLoaded", function(event) {
 	
 	const url = 'https://beta.gouv.fr/api/v1.6/startups.json'; // Get startups from beta gouv api
+	const start_container = document.getElementById('start_container'); // Get the start container
+	const startup_container = document.getElementById('startup_container'); // Get the startup container
+	const button_container = document.getElementById('button_container'); // Get the button container
+	const start_button = document.getElementById('start_button'); // Get the start button
 	const name = document.getElementById('name'); // Get the startup name element
 	const pitch = document.getElementById('pitch'); // Get the startup pitch element
 	const timer = document.getElementById('timer'); // Get the timer
 	const next = document.getElementById('next'); // Get the next button
 	const back = document.getElementById('back'); // Get the back button
-	const nextIndicator = document.getElementById('nextIndicator'); // Get the next startup indicator
-
 
 	/****************
 	GENERAL FUNCTIONS
@@ -43,9 +45,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	}
 	function setNextStartup(newName, startupId, startupLength) {
 		if (startupLength == -1) {
-			nextIndicator.innerHTML = "-";
+			next.disabled = true;
 		} else {
-			nextIndicator.innerHTML = startupId + "/" + startupLength + " - prochain : " + newName;
+			next.innerHTML = "suivant (" + newName + ")";
 		}
 	}
 	function changeStartup(startups, startupIdList, currentStartupId) {
@@ -70,8 +72,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		var minute = Math.floor(totalSeconds/60);
 		var second = totalSeconds - minute*60;
 		minute = prefixZero(minute);
-		second = prefixZero(second);	
+		second = prefixZero(second);
 		timer.innerHTML = minute + ":" + second;
+		if(totalSeconds >= 60) {
+			timer.classList.add('timer_red');
+		}
 	}
 	function launchClock() {
 		totalSeconds = 0;
@@ -84,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	THE STANDUP APP
 	**************/
 
-	function getMtesStartups() {
+	function runApp() {
 
 		var startups = {}; // json of all mtes startups
 		var currentStartupId = 0; // current startup id displayed
@@ -104,10 +109,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 		   	// Go to next startup
 		   	function goToNextStartup() {
-		   		// If second startup show back button
-				if (currentStartupId == 0) {
-					back.classList.remove('hidden');
-				}
 		   		// Don't allow going to last startup + 2
 		   		if (currentStartupId == startupIdList.length) {
 		   			return;
@@ -118,7 +119,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		   			name.innerHTML = 'Sujets transverses';
 					pitch.innerHTML = 'Sujets ou annonces qui concernent l\'ensemble de la fabrique numérique'
 					setNextStartup('', -1, -1);
-					next.classList.add('hidden');
 		   		}
 		   		// If second to last startup, then don't display next startup
 		   		else if (currentStartupId == startupIdList.length - 2) {
@@ -140,10 +140,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			// Go to previous startup
 		   	function goToPreviousStartup() {
 		   		// Don't allow going to first startup - 1
-		   		if (currentStartupId == 1) {
-					back.classList.add('hidden');	
-		   		}
-		   		// Don't allow going to first startup - 1
 		   		if (currentStartupId == 0) {
 		   			return;
 		   		}
@@ -153,7 +149,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 					currentStartup = startups[JsonToArray(startups)[startupIdList[currentStartupId]]];
 					setCurrentStartup(currentStartup.attributes.name, currentStartup.attributes.pitch);
 					setNextStartup('Sujets transverses', currentStartupId + 1, startupIdList.length);
-					next.classList.remove('hidden');	
 		   		}
 				// Else change startup
 				else {
@@ -174,6 +169,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 	}
 
-	getMtesStartups();
+	/************
+	START THE APP
+	************/
+
+	function appStart() {
+		start_container.remove();
+		startup_container.classList.remove('hidden');
+		button_container.classList.remove('hidden');
+		runApp();
+	}
+
+	start_button.addEventListener('click', appStart);
 
 });

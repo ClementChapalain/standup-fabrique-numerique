@@ -3,7 +3,7 @@
 
 <body>
 	<div class="container master_container">
-		<div class="container title_container">
+		<div class="container" id="title_container">
 			<div class="container inline_container small_container">
 				<img src="https://camo.githubusercontent.com/bf4307eec74910f8f9e547cf858f203d897c9ada/687474703a2f2f696d6167652e6e6f656c736861636b2e636f6d2f66696368696572732f323031382f34392f312f313534333833353430302d6c6f676f2d66616272697175656e756d6572697175652e706e67">
 			</div>
@@ -11,17 +11,21 @@
 				<h1 class="title">Standup Fabrique Numérique</h1>
 			</div>
 		</div>
-	  	<div class="container">
-			<div class="container medium_container inline_container">
+		<div class="container" id="start_container">
+			<h2 id="start_title"><button id="start_button">Commencer</button></h2>
+		</div>
+	  	<div class="container hidden" id="startup_container">
+			<div class="container inline_container medium_container ">
 				<h2 id="name"></h2>
 			  	<p id="pitch"></p>
 			</div>
-			<div class="container medium_container inline_container">
-			  	<p id="timer"></p>
-	  			<p id="nextIndicator"></p>
-	  			<button id="back" class="hidden">précédent</button>
-	  			<button id="next">suivant</button>
+			<div class="container inline_container medium_container">
+			  	<h2 id="timer"></h2>
 	  		</div>
 	  	</div>
+	  	<div class="container hidden" id="button_container">
+  			<button id="back">précédent</button>
+  			<button id="next">suivant</button>
+  		</div>
 	</div>
 <body>

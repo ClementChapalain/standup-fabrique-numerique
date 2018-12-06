@@ -18,15 +18,18 @@ img {
 /*containers*/
 
 .container {
-  padding:10px;
+  padding: 10px;
   /*border: 1px solid red;*/
   vertical-align: middle;
 }
 
+.inline_container {
+  display: inline-block;
+}
+
 .master_container {
   /*border: 1px solid black;*/
-  width: 60%;
-  margin-top: 40px;
+  width: 80%;
 }
 
 .big_container {
@@ -34,58 +37,85 @@ img {
 }
 
 .medium_container {
-  width: 40%;
+  width: 45%;
 }
 
 .small_container {
-  width: 15%;
+  width: 20%;
+  min-width: 120px;
 }
 
-.title_container {
-  width: 90%;
+#title_container {
+  width: 95%;
   border-bottom: 1px solid black;
 }
 
-.inline_container {
-  display: inline-block;
+#startup_container {
+  width: 95%;
+  min-height: 250px;
+}
+
+#button_container {
+  width: 95%;
 }
 
 /*texts*/
 
 h1 {
+  font-weight: lighter;
+  font-size: 3em;
+  font-family: sans-serif;
+}
+
+h2 {
   font-weight: bold;
-  font-size: 2.4em;
-  font-family: Impact;
+  font-size: 3em;
+  font-family: sans-serif;
 }
 
 p {
   text-align: center;
+  font-size: 1.5em;
 }
 
-#timer {
-  font-size: 1.2em;
-}
-
-#nextIndicator {
-  font-style: italic;
+.timer_red {
+  color: crimson;
 }
 
 /*buttons*/
 
 button {
-  min-width: 70px;
-  max-width: 50%;
+  min-width: 110px;
   margin-left: 5px;
   margin-right: 5px; 
   text-align: center;
-  padding: 5px 10px 5px 10px;
+  padding: 10px;
+  background-color: white;
+  font-size: 1.5em;
+}
+
+#start_button {
+  margin-top: 50px;
+  background-color: white;
+  vertical-align: center;
+  border: 5px solid black;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+#start_button:hover {
+  background-color: black;
+  color: white;
+  cursor: pointer;
 }
 
 #next {
-  border: 5px solid black;
+  border: 1px solid black;
+  border-radius: 5px;
   background-color: white;
   color: black;
-  font-weight: bold;
+  vertical-align: center;
+  float: right;
 }
 
 #next:hover {
@@ -99,6 +129,7 @@ button {
   border:none;
   border-bottom: 1px solid lightgrey;
   padding: 2px;
+  float: left;
 }
 
 #back:hover {

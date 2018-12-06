@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 					currentStartup = startups[Object.keys(startups)[startupIdList[currentStartupId]]];
 					// Display new startup
 					var currentStartupIdDisplayed = currentStartupId + 1
-					name.innerHTML = '#' + currentStartupIdDisplayed + ' ' + currentStartup.attributes.name;
+					name.innerHTML = currentStartup.attributes.name;
 					pitch.innerHTML = currentStartup.attributes.pitch;
 				}
 				// Launch the clock

@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		   		if (currentStartupId == startupIdList.length - 1) {
 					++currentStartupId;
 		   			name.innerHTML = 'Sujets transverses';
-					pitch.innerHTML = 'Sujets ou annonces qui concernent l\'ensemble de la fabrique numérique'
+					pitch.innerHTML = 'Sujets ou annonces qui concernent l\'ensemble de la Fabrique Numérique'
 					setNextStartup('', -1, -1);
 		   		}
 		   		// If second to last startup, then don't display next startup

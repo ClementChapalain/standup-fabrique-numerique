@@ -6,6 +6,11 @@ div {
   text-align: center;
 }
 
+img {
+  width:100px;
+  height:100px;
+}
+
 .hidden {
   visibility: hidden;
 }
@@ -13,23 +18,35 @@ div {
 /*containers*/
 
 .container {
-  padding:20px;
-  width: 90%;
+  padding:10px;
   /*border: 1px solid red;*/
+  vertical-align: middle;
 }
 
-.big_container {
+.master_container {
   border: 1px solid black;
   width: 80%;
   margin-top: 40px;
 }
 
+.big_container {
+  width: 70%;
+}
+
+.medium_container {
+  width: 40%;
+}
+
+.small_container {
+  width: 15%;
+}
+
 .title_container {
+  width: 90%;
   border-bottom: 1px solid black;
 }
 
 .inline_container {
-  width: 40%;
   display: inline-block;
 }
 

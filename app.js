@@ -80,6 +80,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	}
 	function launchClock() {
 		totalSeconds = 0;
+		timer.classList.remove('timer_red');
 		timer.innerHTML = '00:00';
 		clearInterval(timeVar);
 		timeVar = setInterval(runTimer, 1000);
